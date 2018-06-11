@@ -1,0 +1,39 @@
+version: '3'
+services:
+
+  # The Database
+  mysql:
+    container_name: mysql
+    image: mysql:5.7
+    restart: always
+    volumes:
+      - dbdata:/var/lib/mysql
+      - ./root:/root
+    environment:
+      - "MYSQL_DATABASE=test"
+      - "MYSQL_USER=root"
+      - "MYSQL_PASSWORD=root"
+      - "MYSQL_ROOT_PASSWORD=root"
+    ports:
+        - "33061:3306"
+    networks:
+        - default
+
+  phpmyadmin:
+    container_name: phpmyadmin
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    depends_on:
+      - mysql
+    links: 
+      - mysql
+    ports:
+      - 8001:80
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+    networks:
+        - default
+
+volumes:
+  dbdata:
